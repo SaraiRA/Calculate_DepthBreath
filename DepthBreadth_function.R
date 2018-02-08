@@ -1,8 +1,13 @@
-DepthBreadth_function <- function( depth_data, num_sample, name_sample){
+DepthBreadth_function <- function(depth_data, num_sample, name_sample){
+  
+  #vectors results
+  vdepth<- c()
+  vbreath<- c()
+  
   #names col in data frame
   numCol_Depth<-num_sample+1
   numCol_Breath<-numCol_Depth+1
-  colnames(df_DepthBreath)[numCol_Depth:numCol_Breath]<- c(paste0("Depth_",name_sample), paste0("Breath_",name_sample))
+  #colnames(df_DepthBreath)[numCol_Depth:numCol_Breath]<- c(paste0("Depth_",name_sample), paste0("Breath_",name_sample))
 
   # walking in the list to calculate the depth and breath
   number_effector<- length(unique(depth_data$scaffold))
@@ -15,7 +20,8 @@ DepthBreadth_function <- function( depth_data, num_sample, name_sample){
 
     ## DEPTH
     depth<- mean(temporal_dataFrame[!(temporal_dataFrame$depth==0),3])
-    df_DepthBreath[i, numCol_Depth]<- depth
+    vdepth<-append(vdepth,depth)
+    #df_DepthBreath[i, numCol_Depth]<- depth
   
     ## BREATH of coverage
     # length of all the effector
@@ -25,6 +31,8 @@ DepthBreadth_function <- function( depth_data, num_sample, name_sample){
     my_effectorLength<-dim(temporal_dataFrame[!(temporal_dataFrame$depth==0),])[1]
 
     breadth<- (my_effectorLength/effectorLength)*100
-    df_DepthBreath[i, numCol_Breath]<- breadth
+    #df_DepthBreath[i, numCol_Breath]<- breadth
+    vbreath<- append(vbreath, breadth)
   } 
-}
+ return(list( vdepth, vbreath))
+  }
