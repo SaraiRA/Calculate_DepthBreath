@@ -1,13 +1,8 @@
-DepthBreadth_function <- function(depth_data, num_sample, name_sample){
+DepthBreadth_function <- function(depth_data){
   
   #vectors results
   vdepth<- c()
   vbreath<- c()
-  
-  #names col in data frame
-  numCol_Depth<-num_sample+1
-  numCol_Breath<-numCol_Depth+1
-  #colnames(df_DepthBreath)[numCol_Depth:numCol_Breath]<- c(paste0("Depth_",name_sample), paste0("Breath_",name_sample))
 
   # walking in the list to calculate the depth and breath
   number_effector<- length(unique(depth_data$scaffold))
