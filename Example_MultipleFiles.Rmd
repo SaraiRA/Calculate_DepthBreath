@@ -1,0 +1,91 @@
+# Library
+```{r}
+library(ggplot2)
+```
+
+# Function: Depth and breadth coverage
+```{r}
+
+DepthBreadth_function <- function(depth_data){
+  
+  #vectors results
+  vdepth<- c()
+  vbreath<- c()
+
+  # walking in the list to calculate the depth and breath
+  number_effector<- length(unique(depth_data$scaffold))
+  # the lsit is to split depends the effectors
+  listEffector<- split(depth_data, depth_data$scaffold)
+
+  # for each effector calculate the depth and breath
+  for(i in 1:number_effector){
+   temporal_dataFrame<-listEffector[[i]]
+
+    ## DEPTH
+    depth<-mean(temporal_dataFrame[!(temporal_dataFrame$depth==0),3])
+    #depth<- round(mean(temporal_dataFrame[!(temporal_dataFrame$depth==0),3]),1)
+    vdepth<-append(vdepth,depth)
+    #df_DepthBreath[i, numCol_Depth]<- depth
+  
+    ## BREATH of coverage
+    # length of all the effector
+    effectorLength<-dim(temporal_dataFrame)[1]
+    # lenght position differences to 0
+    #my_effectorLength<-length(which(listEffector[[i]][3]>0, arr.ind = FALSE, useNames = TRUE))
+    my_effectorLength<-dim(temporal_dataFrame[!(temporal_dataFrame$depth==0),])[1]
+
+    breadth<- (my_effectorLength/effectorLength)*100
+    #breadth<- round( ((my_effectorLength/effectorLength)*100),1) 
+    #df_DepthBreath[i, numCol_Breath]<- breadth
+    vbreath<- append(vbreath, breadth)
+  } 
+ return(list( vdepth, vbreath))
+  }
+
+```
+
+# Load data 
+```{r}
+
+myFiles <- list.files(pattern="*.txt")
+```
+
+
+```{r}
+# creating empty data frame with names 
+
+# read table 
+depth_data <- read.table(myFiles[1],header=FALSE, sep="\t", na.strings="NA", dec=".", strip.white=TRUE,stringsAsFactors=FALSE)
+colnames(depth_data)<-c("scaffold", "position", "depth")
+  
+#changes for pretty names
+depth_data$scaffold<- unlist(lapply(strsplit(depth_data$scaffold[], "_"), `[[`, 1))
+  
+#creating new empty data frame 
+df_DepthBreath = data.frame(unique(sort(unlist(lapply(strsplit(depth_data$scaffold[], "_"), `[[`, 1)))))
+colnames(df_DepthBreath)<- "Effectors"
+
+for (i in 1:length(myFiles)){
+  one_seqname<-strsplit(myFiles[i],"_")[[1]][1]
+  
+  # read table 
+  depth_data <- read.table(myFiles[i],header=FALSE, sep="\t", na.strings="NA", dec=".", strip.white=TRUE,stringsAsFactors=FALSE)
+  colnames(depth_data)<-c("scaffold", "position", "depth")
+  
+  depth_data$scaffold<- unlist(lapply(strsplit(depth_data$scaffold[], "_"), `[[`, 1))
+  
+  list.DepthBreadth<- DepthBreadth_function(depth_data)
+  
+  df_DepthBreath[paste0("Depth_",one_seqname)] <- list.DepthBreadth[[1]]
+  df_DepthBreath[paste0("Breath_",one_seqname)] <- list.DepthBreadth[[2]]
+  
+}  
+  
+```
+
+
+# Output 
+```{r}
+# writng teh otupur in excel file 
+write.table(df_DepthBreath,"~/DepthBreath_effectors.txt",sep="\t",row.names=FALSE)
+```
