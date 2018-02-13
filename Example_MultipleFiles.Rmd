@@ -46,9 +46,6 @@ DepthBreadth_function <- function(depth_data){
 
 # Load data 
 ```{r}
-#getwd()
-#setwd("/Volumes/tsl_hpc_home/TSL_2k/reyesac/rice_blast/cns_Herbarium_samples_Effectors/")
-#setwd("~/Documents/Rice_blast/Data/")
 myFiles <- list.files(pattern="*.txt")
 ```
 
