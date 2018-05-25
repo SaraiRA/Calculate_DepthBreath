@@ -16,7 +16,7 @@ DepthBreadth_function <- function(depth_data){
     ## DEPTH
     depth<- mean(temporal_dataFrame[!(temporal_dataFrame$depth==0),3])
     vdepth<-append(vdepth,depth)
-    #df_DepthBreath[i, numCol_Depth]<- depth
+    ##df_DepthBreath[i, numCol_Depth]<- depth
   
     ## BREATH of coverage
     # length of all the effector
